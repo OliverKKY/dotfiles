@@ -1,0 +1,20 @@
+*
+!.gitignore
+!README.md
+!hypr/
+!hypr/**
+!kitty/
+!kitty/**
+!rofi/
+!rofi/**
+!waybar/
+!waybar/**
+!zed/
+!zed/**
+
+# Local editor/agent markers
+hypr/.codex
+
+# Local backups
+*.bak
+*.bak-*

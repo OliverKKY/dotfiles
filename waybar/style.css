@@ -1,0 +1,145 @@
+@define-color surface rgba(18, 22, 27, 0.58);
+@define-color surface_hover rgba(30, 36, 44, 0.78);
+@define-color surface_strong rgba(245, 247, 250, 0.92);
+@define-color border rgba(255, 255, 255, 0.09);
+@define-color foreground #f4f7fb;
+@define-color foreground_muted rgba(244, 247, 251, 0.62);
+@define-color accent #7dd3a4;
+@define-color critical #ff7b72;
+@define-color warning #ffd166;
+
+* {
+    font-family: Cantarell, "Symbols Nerd Font", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    min-height: 0;
+}
+
+#waybar {
+    background: transparent;
+    color: @foreground;
+}
+
+#clock,
+#workspaces,
+#custom-system-status {
+    margin: 8px 0px;
+    min-height: 8px;
+    border-radius: 999px;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease;
+}
+
+#workspaces {
+    margin-left: 12px;
+    padding: 0;
+}
+
+#workspaces button {
+    min-width: 13px;
+    min-height: 0px;
+    margin: 2px 4px;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(244, 247, 251, 0.26);
+    box-shadow: none;
+    font-size: 0;
+    color: transparent;
+    transition:
+        min-width 140ms ease,
+        background-color 140ms ease,
+        opacity 140ms ease;
+}
+
+#workspaces button:hover {
+    background: rgba(244, 247, 251, 0.5);
+}
+
+#workspaces button.active {
+    min-width: 28px;
+    min-height: 0px;
+    margin: 2px 4px;
+    background: @surface_strong;
+}
+
+#workspaces button.empty {
+    background: rgba(244, 247, 251, 0.26);
+}
+
+#workspaces button.active.empty {
+    background: @surface_strong;
+}
+
+#clock {
+    padding: 0 14px;
+    background: @surface;
+    border: 1px solid @border;
+    color: @foreground;
+}
+
+#custom-system-status {
+    margin-right: 12px;
+    padding: 0 12px;
+    background: @surface;
+    border: 1px solid @border;
+    color: @foreground;
+}
+
+#clock:hover,
+#custom-system-status:hover {
+    background: @surface_hover;
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+#custom-system-status.disconnected,
+#custom-system-status.muted {
+    color: @foreground_muted;
+}
+
+#custom-system-status.warning {
+    color: @warning;
+}
+
+#custom-system-status.critical {
+    color: @critical;
+}
+
+tooltip {
+    background: rgba(20, 24, 30, 0.96);
+    border: 1px solid @border;
+    border-radius: 16px;
+}
+
+tooltip label {
+    color: @foreground;
+    padding: 10px 12px;
+}
+
+menu {
+    background: rgba(20, 24, 30, 0.96);
+    color: @foreground;
+    border: 1px solid @border;
+    border-radius: 18px;
+    padding: 8px;
+}
+
+menuitem {
+    min-height: 28px;
+    padding: 8px 12px;
+    border-radius: 10px;
+}
+
+menuitem:hover {
+    background: @accent;
+    color: #0b1117;
+}
+
+separator {
+    background: transparent;
+    min-height: 6px;
+}

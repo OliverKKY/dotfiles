@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkMenu" id="menu">
+    <child>
+      <object class="GtkMenuItem" id="toggle-wifi">
+        <property name="label">Toggle Wi-Fi</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="network-settings">
+        <property name="label">Network Settings</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="sep-network"/>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="toggle-bluetooth">
+        <property name="label">Toggle Bluetooth</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="bluetooth-settings">
+        <property name="label">Bluetooth Settings</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="sep-bluetooth"/>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="toggle-mute">
+        <property name="label">Toggle Mute</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="sound-settings">
+        <property name="label">Sound Settings</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="sep-sound"/>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="power-settings">
+        <property name="label">Power Settings</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="system-settings">
+        <property name="label">System Settings</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="sep-session"/>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="lock">
+        <property name="label">Lock Screen</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="suspend">
+        <property name="label">Suspend</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="restart">
+        <property name="label">Restart</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="poweroff">
+        <property name="label">Power Off</property>
+      </object>
+    </child>
+  </object>
+</interface>
