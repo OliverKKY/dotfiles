@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+set -eu
+
+if [ "$#" -lt 1 ]; then
+    echo "usage: apply-wal <image>" >&2
+    exit 1
+fi
+
+image_path=$1
+
+if ! command -v wal >/dev/null 2>&1; then
+    exit 0
+fi
+
+wal -i "$image_path" -n
+hyprctl reload >/dev/null 2>&1 || true
