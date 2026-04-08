@@ -1,12 +1,14 @@
-@define-color surface rgba(18, 22, 27, 0.58);
-@define-color surface_hover rgba(30, 36, 44, 0.78);
-@define-color surface_strong rgba(245, 247, 250, 0.92);
-@define-color border rgba(255, 255, 255, 0.09);
-@define-color foreground #f4f7fb;
-@define-color foreground_muted rgba(244, 247, 251, 0.62);
-@define-color accent #7dd3a4;
-@define-color critical #ff7b72;
-@define-color warning #ffd166;
+@import url("/home/oliver/.cache/wal/colors-waybar.css");
+
+@define-color surface alpha(@background, 0.58);
+@define-color surface_hover alpha(@color8, 0.78);
+@define-color surface_strong alpha(@foreground, 0.92);
+@define-color border alpha(@foreground, 0.12);
+@define-color foreground @foreground;
+@define-color foreground_muted alpha(@foreground, 0.62);
+@define-color accent @color4;
+@define-color critical @color1;
+@define-color warning @color3;
 
 * {
     font-family: Cantarell, "Symbols Nerd Font", sans-serif;
@@ -136,7 +138,7 @@ menuitem {
 
 menuitem:hover {
     background: @accent;
-    color: #0b1117;
+    color: @background;
 }
 
 separator {

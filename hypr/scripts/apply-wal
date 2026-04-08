@@ -15,3 +15,8 @@ fi
 
 wal -i "$image_path" -n
 hyprctl reload >/dev/null 2>&1 || true
+
+if pgrep -x waybar >/dev/null 2>&1; then
+    pkill waybar || true
+    waybar >/dev/null 2>&1 &
+fi
