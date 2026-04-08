@@ -8,15 +8,21 @@ if [ "$#" -lt 1 ]; then
 fi
 
 image_path=$1
+wal_bin=${WAL_BIN:-"$HOME/.local/bin/wal"}
 
-if ! command -v wal >/dev/null 2>&1; then
-    exit 0
+if [ ! -x "$wal_bin" ]; then
+    wal_bin=$(command -v wal 2>/dev/null || true)
 fi
 
-wal -i "$image_path" -n
+if [ -z "${wal_bin:-}" ] || [ ! -x "$wal_bin" ]; then
+    exit 1
+fi
+
+"$wal_bin" -i "$image_path" -n
 hyprctl reload >/dev/null 2>&1 || true
 
 if pgrep -x waybar >/dev/null 2>&1; then
-    pkill waybar || true
-    waybar >/dev/null 2>&1 &
+    pkill -SIGUSR2 waybar || true
 fi
+
+kitty @ --to unix:/tmp/kitty-theme load-config /home/oliver/.config/kitty/kitty.conf >/dev/null 2>&1 || true

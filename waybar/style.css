@@ -4,8 +4,8 @@
 @define-color surface_hover alpha(@color8, 0.78);
 @define-color surface_strong alpha(@foreground, 0.92);
 @define-color border alpha(@foreground, 0.12);
-@define-color foreground @foreground;
-@define-color foreground_muted alpha(@foreground, 0.62);
+@define-color text @foreground;
+@define-color text_muted alpha(@foreground, 0.62);
 @define-color accent @color4;
 @define-color critical @color1;
 @define-color warning @color3;
@@ -23,7 +23,7 @@
 
 #waybar {
     background: transparent;
-    color: @foreground;
+    color: @text;
 }
 
 #clock,
@@ -81,7 +81,7 @@
     padding: 0 14px;
     background: @surface;
     border: 1px solid @border;
-    color: @foreground;
+    color: @text;
 }
 
 #custom-system-status {
@@ -89,7 +89,7 @@
     padding: 0 12px;
     background: @surface;
     border: 1px solid @border;
-    color: @foreground;
+    color: @text;
 }
 
 #clock:hover,
@@ -100,7 +100,7 @@
 
 #custom-system-status.disconnected,
 #custom-system-status.muted {
-    color: @foreground_muted;
+    color: @text_muted;
 }
 
 #custom-system-status.warning {
@@ -118,13 +118,13 @@ tooltip {
 }
 
 tooltip label {
-    color: @foreground;
+    color: @text;
     padding: 10px 12px;
 }
 
 menu {
     background: rgba(20, 24, 30, 0.96);
-    color: @foreground;
+    color: @text;
     border: 1px solid @border;
     border-radius: 18px;
     padding: 8px;
