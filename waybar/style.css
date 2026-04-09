@@ -1,9 +1,12 @@
-@import url("/home/oliver/.cache/wal/colors-waybar.css");
+@import url("../../.cache/wal/colors-waybar.css");
 
 @define-color surface alpha(@background, 0.58);
 @define-color surface_hover alpha(@color8, 0.78);
 @define-color surface_strong alpha(@foreground, 0.92);
+@define-color surface_soft mix(@foreground, @background, 0.9);
+@define-color surface_soft_hover mix(@foreground, @background, 0.78);
 @define-color border alpha(@foreground, 0.12);
+@define-color border_soft alpha(@foreground, 0.08);
 @define-color text @foreground;
 @define-color text_muted alpha(@foreground, 0.62);
 @define-color accent @color4;
@@ -26,6 +29,10 @@
     color: @text;
 }
 
+#waybar > box {
+    padding-top: 2px;
+}
+
 #clock,
 #workspaces,
 #custom-system-status {
@@ -34,7 +41,8 @@
     border-radius: 999px;
     transition:
         background-color 120ms ease,
-        border-color 120ms ease;
+        border-color 120ms ease,
+        box-shadow 120ms ease;
 }
 
 #workspaces {
@@ -48,18 +56,24 @@
     margin: 2px 4px;
     padding: 0;
     border-radius: 999px;
-    background: rgba(244, 247, 251, 0.26);
-    box-shadow: none;
+    background: @surface_soft;
+    border: 1px solid @border;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.12),
+        0 0 0 1px alpha(@background, 0.08);
     font-size: 0;
     color: transparent;
     transition:
         min-width 140ms ease,
         background-color 140ms ease,
+        border-color 140ms ease,
+        box-shadow 140ms ease,
         opacity 140ms ease;
 }
 
 #workspaces button:hover {
-    background: rgba(244, 247, 251, 0.5);
+    background: @surface_soft_hover;
+    border-color: @border;
 }
 
 #workspaces button.active {
@@ -67,10 +81,12 @@
     min-height: 0px;
     margin: 2px 4px;
     background: @surface_strong;
+    border-color: transparent;
+    box-shadow: none;
 }
 
 #workspaces button.empty {
-    background: rgba(244, 247, 251, 0.26);
+    background: @surface_soft;
 }
 
 #workspaces button.active.empty {
@@ -78,24 +94,30 @@
 }
 
 #clock {
-    padding: 0 14px;
-    background: @surface;
+    padding: 0 16px;
+    background: @surface_soft;
     border: 1px solid @border;
     color: @text;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.12),
+        0 0 0 1px alpha(@background, 0.08);
 }
 
 #custom-system-status {
     margin-right: 12px;
-    padding: 0 12px;
-    background: @surface;
+    padding: 0 14px;
+    background: @surface_soft;
     border: 1px solid @border;
     color: @text;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.12),
+        0 0 0 1px alpha(@background, 0.08);
 }
 
 #clock:hover,
 #custom-system-status:hover {
-    background: @surface_hover;
-    border-color: rgba(255, 255, 255, 0.16);
+    background: @surface_soft_hover;
+    border-color: @border;
 }
 
 #custom-system-status.disconnected,
@@ -112,7 +134,7 @@
 }
 
 tooltip {
-    background: rgba(20, 24, 30, 0.96);
+    background: alpha(@background, 0.94);
     border: 1px solid @border;
     border-radius: 16px;
 }
@@ -123,22 +145,28 @@ tooltip label {
 }
 
 menu {
-    background: rgba(20, 24, 30, 0.96);
+    background: alpha(@background, 0.9);
     color: @text;
     border: 1px solid @border;
-    border-radius: 18px;
+    border-radius: 6px;
     padding: 8px;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.1),
+        0 14px 34px alpha(@background, 0.34);
 }
 
 menuitem {
     min-height: 28px;
     padding: 8px 12px;
-    border-radius: 10px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid transparent;
 }
 
 menuitem:hover {
-    background: @accent;
-    color: @background;
+    background: @surface_soft;
+    border-color: @border;
+    color: @text;
 }
 
 separator {

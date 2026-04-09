@@ -1,6 +1,7 @@
 *
 !.gitignore
 !README.md
+!setup.sh
 !hypr/
 !hypr/**
 !kitty/

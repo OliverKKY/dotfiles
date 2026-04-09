@@ -30,7 +30,7 @@
   "clock": {
     "format": "{:%a %d %b  %H:%M}",
     "tooltip-format": "<span size='large'><b>{:%A, %B %-d, %Y}</b></span>\n\n<tt><small>{calendar}</small></tt>",
-    "on-click": "/home/oliver/.config/waybar/popup_toggle.sh clock",
+    "on-click": "~/.config/waybar/popup_toggle.sh clock",
     "calendar": {
       "mode": "month",
       "weeks-pos": "right",
@@ -53,11 +53,11 @@
   "custom/system-status": {
     "format": "{text}",
     "return-type": "json",
-    "exec": "/home/oliver/.config/waybar/system_status.sh",
+    "exec": "~/.config/waybar/system_status.sh",
     "interval": 5,
     "tooltip": true,
     "escape": true,
-    "on-click": "/home/oliver/.config/waybar/popup_toggle.sh quick-settings",
-    "on-click-right": "/home/oliver/.config/waybar/popup_action.sh sound-settings"
+    "on-click": "~/.config/waybar/popup_toggle.sh quick-settings",
+    "on-click-right": "~/.config/waybar/popup_action.sh sound-settings"
   }
 }

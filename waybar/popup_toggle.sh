@@ -2,10 +2,11 @@
 
 set -u
 
+config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
 mode="${1:-quick-settings}"
 launch_mode="${2:-}"
-popup_script="/home/oliver/.config/waybar/gnome_popup.js"
-position_script="/home/oliver/.config/waybar/popup_position.sh"
+popup_script="$config_root/waybar/gnome_popup.js"
+position_script="$config_root/waybar/popup_position.sh"
 pid_dir="${XDG_RUNTIME_DIR:-/tmp}/waybar-gnome-popup"
 
 mkdir -p "$pid_dir"
@@ -47,9 +48,9 @@ else
 fi
 
 if [[ "$launch_mode" == "sticky" ]]; then
-    WAYBAR_GNOME_POPUP_STICKY=1 gjs "/home/oliver/.config/waybar/gnome_popup.js" "$mode" >/tmp/waybar-gnome-popup-"$mode".log 2>&1 &
+    WAYBAR_GNOME_POPUP_STICKY=1 gjs "$popup_script" "$mode" >/tmp/waybar-gnome-popup-"$mode".log 2>&1 &
 else
-    gjs "/home/oliver/.config/waybar/gnome_popup.js" "$mode" >/tmp/waybar-gnome-popup-"$mode".log 2>&1 &
+    gjs "$popup_script" "$mode" >/tmp/waybar-gnome-popup-"$mode".log 2>&1 &
 fi
 popup_pid=$!
 printf '%s\n' "$popup_pid" >"$pid_dir/${mode}.pid"

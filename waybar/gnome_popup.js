@@ -15,7 +15,8 @@ Adw.init();
 
 const MODE = ARGV[0] || "quick-settings";
 const STICKY = GLib.getenv("WAYBAR_GNOME_POPUP_STICKY") === "1";
-const CONFIG_DIR = "/home/oliver/.config/waybar";
+const CONFIG_ROOT = GLib.getenv("XDG_CONFIG_HOME") || GLib.build_filenamev([GLib.getenv("HOME"), ".config"]);
+const CONFIG_DIR = GLib.build_filenamev([CONFIG_ROOT, "waybar"]);
 const ACTION_SCRIPT = `${CONFIG_DIR}/popup_action.sh`;
 const STATE_SCRIPT = `${CONFIG_DIR}/popup_state.sh`;
 const CSS_FILE = `${CONFIG_DIR}/gnome_popup.css`;

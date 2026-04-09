@@ -1,14 +1,29 @@
+@import url("../../.cache/wal/colors-waybar.css");
+
+@define-color popup_surface alpha(@background, 0.9);
+@define-color card_surface alpha(@foreground, 0.16);
+@define-color card_surface_hover alpha(@foreground, 0.24);
+@define-color card_surface_strong alpha(@foreground, 0.24);
+@define-color border alpha(@foreground, 0.12);
+@define-color border_soft alpha(@foreground, 0.08);
+@define-color text @foreground;
+@define-color text_muted alpha(@foreground, 0.68);
+@define-color accent @color4;
+@define-color accent_text @background;
+
 .popup-window {
-    background: rgba(12, 16, 21, 0.86);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: @popup_surface;
+    border: 1px solid @border;
     border-radius: 6px;
     padding: 18px;
-    color: #f4f7fb;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
+    color: @text;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.1),
+        0 18px 40px alpha(@background, 0.38);
 }
 
 .popup-window * {
-    color: #f4f7fb;
+    color: @text;
     font-family: Cantarell, "Symbols Nerd Font", sans-serif;
 }
 
@@ -16,9 +31,12 @@
 .icon-circle {
     min-width: 38px;
     min-height: 38px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    background: @card_surface;
+    border: 1px solid @border;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.1),
+        0 0 0 1px alpha(@background, 0.08);
 }
 
 .icon-circle:hover,
@@ -29,8 +47,8 @@
 .notification-card:hover,
 .expand-card:hover,
 .mini-button:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: @card_surface_hover;
+    border-color: @border;
 }
 
 .volume-card,
@@ -38,28 +56,43 @@
 .notification-card,
 .text-card,
 .weather-card {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 6px;
+    background: @card_surface;
+    border: 1px solid @border;
+    border-radius: 18px;
     padding: 15px;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.1),
+        0 0 0 1px alpha(@background, 0.08);
 }
 
 .quick-button {
     min-width: 0;
     min-height: 56px;
-    border-radius: 6px;
+    border-radius: 18px;
     padding: 11px 13px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: @card_surface;
+    border: 1px solid @border;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.1),
+        0 0 0 1px alpha(@background, 0.08);
 }
 
 .quick-button.active {
-    background: linear-gradient(180deg, rgba(111, 214, 154, 0.92), rgba(72, 170, 110, 0.92));
-    border-color: rgba(160, 255, 196, 0.2);
+    background: alpha(@accent, 0.88);
+    border-color: alpha(@foreground, 0.18);
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.14),
+        0 0 0 1px alpha(@accent, 0.22);
+}
+
+.quick-button.active,
+.quick-button.active *,
+.calendar-cell.today {
+    color: @accent_text;
 }
 
 .quick-button.inactive {
-    background: rgba(255, 255, 255, 0.08);
+    background: @card_surface;
 }
 
 .quick-button.dim {
@@ -73,7 +106,7 @@
 
 .section-subtitle {
     font-size: 9px;
-    opacity: 0.66;
+    color: @text_muted;
 }
 
 .popup-title {
@@ -95,9 +128,10 @@
 .calendar-cell {
     min-width: 34px;
     min-height: 30px;
-    border-radius: 6px;
+    border-radius: 12px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.02);
+    background: alpha(@foreground, 0.05);
+    border: 1px solid transparent;
     font-size: 12px;
     font-weight: 700;
 }
@@ -107,17 +141,18 @@
 }
 
 .calendar-cell.today {
-    background: linear-gradient(180deg, rgba(111, 214, 154, 0.95), rgba(72, 170, 110, 0.95));
-    color: #08110c;
+    background: alpha(@accent, 0.9);
+    border-color: alpha(@foreground, 0.18);
+    color: @accent_text;
 }
 
 .calendar-cell.weeknum {
-    background: rgba(255, 255, 255, 0.06);
+    background: alpha(@foreground, 0.08);
     opacity: 0.52;
 }
 
 .calendar-weekday {
-    opacity: 0.55;
+    color: @text_muted;
     font-size: 10px;
     font-weight: 800;
 }
@@ -125,19 +160,22 @@
 .clear-button,
 .mini-button {
     min-height: 36px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    background: @card_surface;
+    border: 1px solid @border;
+    box-shadow:
+        inset 0 1px 0 alpha(@foreground, 0.1),
+        0 0 0 1px alpha(@background, 0.08);
 }
 
 scale trough {
     min-height: 7px;
-    background: rgba(255, 255, 255, 0.11);
+    background: alpha(@foreground, 0.12);
     border-radius: 999px;
 }
 
 scale highlight {
-    background: linear-gradient(90deg, rgba(111, 214, 154, 0.95), rgba(72, 170, 110, 0.95));
+    background: alpha(@accent, 0.92);
     border-radius: 999px;
 }
 
@@ -145,6 +183,6 @@ scale slider {
     min-width: 14px;
     min-height: 14px;
     border-radius: 999px;
-    background: #f8fbff;
-    box-shadow: 0 0 0 4px rgba(248, 251, 255, 0.08);
+    background: @text;
+    box-shadow: 0 0 0 4px alpha(@foreground, 0.1);
 }

@@ -2,5 +2,6 @@
 
 set -u
 
+config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
 mode="${1:-quick-settings}"
-/home/oliver/.config/waybar/popup_toggle.sh "$mode" sticky
+"$config_root/waybar/popup_toggle.sh" "$mode" sticky

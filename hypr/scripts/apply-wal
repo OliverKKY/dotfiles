@@ -25,4 +25,5 @@ if pgrep -x waybar >/dev/null 2>&1; then
     pkill -SIGUSR2 waybar || true
 fi
 
-kitty @ --to unix:/tmp/kitty-theme load-config /home/oliver/.config/kitty/kitty.conf >/dev/null 2>&1 || true
+config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
+kitty @ --to unix:/tmp/kitty-theme load-config "$config_root/kitty/kitty.conf" >/dev/null 2>&1 || true
