@@ -1,9 +1,9 @@
 {
   "layer": "top",
   "position": "top",
+  "output": ["DP-4"],
   "height": 32,
   "spacing": 8,
-  "output": "DP-4",
   "reload_style_on_change": true,
 
   "modules-left": ["hyprland/workspaces"],
@@ -17,14 +17,14 @@
     "all-outputs": false,
     "format-icons": {
       "active": " ",
-      "default": " "
+      "default": " ",
     },
     "persistent-workspaces": {
       "1": [],
       "2": [],
       "3": [],
-      "4": []
-    }
+      "4": [],
+    },
   },
 
   "clock": {
@@ -40,14 +40,14 @@
         "days": "{}",
         "weeks": "<span alpha='55%'>W{}</span>",
         "weekdays": "<span alpha='70%'>{}</span>",
-        "today": "<span background='#3584e4' foreground='#ffffff' weight='bold'> {} </span>"
-      }
+        "today": "<span background='#3584e4' foreground='#ffffff' weight='bold'> {} </span>",
+      },
     },
     "actions": {
       "on-scroll-up": "shift_up",
       "on-scroll-down": "shift_down",
-      "on-click-right": "mode"
-    }
+      "on-click-right": "mode",
+    },
   },
 
   "custom/system-status": {
@@ -58,6 +58,6 @@
     "tooltip": true,
     "escape": true,
     "on-click": "~/.config/waybar/popup_toggle.sh quick-settings",
-    "on-click-right": "~/.config/waybar/popup_action.sh sound-settings"
-  }
+    "on-click-right": "~/.config/waybar/popup_action.sh sound-settings",
+  },
 }
