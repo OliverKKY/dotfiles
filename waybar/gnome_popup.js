@@ -20,6 +20,7 @@ const CONFIG_DIR = GLib.build_filenamev([CONFIG_ROOT, "waybar"]);
 const ACTION_SCRIPT = `${CONFIG_DIR}/popup_action.sh`;
 const STATE_SCRIPT = `${CONFIG_DIR}/popup_state.sh`;
 const CSS_FILE = `${CONFIG_DIR}/gnome_popup.css`;
+const ANIMATE_OPEN = GLib.getenv("WAYBAR_GNOME_POPUP_ANIMATE") !== "0";
 
 let windowRef = null;
 let refreshSource = null;
@@ -95,6 +96,35 @@ function addClasses(widget, classes) {
         }
     }
     return widget;
+}
+
+function initialWindowSize(mode, width, height) {
+    if (!ANIMATE_OPEN) {
+        return [width, height];
+    }
+
+    return mode === "clock" ? [168, 30] : [126, 30];
+}
+
+function setPopupChild(win, child) {
+    if (!ANIMATE_OPEN) {
+        win.set_child(child);
+        return;
+    }
+
+    const revealer = new Gtk.Revealer({
+        transition_type: Gtk.RevealerTransitionType.SLIDE_DOWN,
+        transition_duration: 220,
+        reveal_child: false,
+    });
+
+    revealer.set_child(child);
+    win.set_child(revealer);
+
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 90, () => {
+        revealer.set_reveal_child(true);
+        return GLib.SOURCE_REMOVE;
+    });
 }
 
 function makeLabel(text, classes = [], xalign = 0) {
@@ -250,11 +280,12 @@ function populateQuickSettings() {
 }
 
 function createQuickSettingsWindow(app) {
+    const [initialWidth, initialHeight] = initialWindowSize("quick-settings", 360, 520);
     const win = new Gtk.ApplicationWindow({
         application: app,
         title: "Waybar GNOME Quick Settings",
-        default_width: 360,
-        default_height: 520,
+        default_width: initialWidth,
+        default_height: initialHeight,
         decorated: false,
         resizable: false,
     });
@@ -305,7 +336,7 @@ function createQuickSettingsWindow(app) {
     root.append(quickWidgets.gridMiddle);
     root.append(quickWidgets.gridBottom);
 
-    win.set_child(root);
+    setPopupChild(win, root);
     populateQuickSettings();
     return win;
 }
@@ -390,11 +421,12 @@ function populateClockWidgets() {
 }
 
 function buildClockWindow(app) {
+    const [initialWidth, initialHeight] = initialWindowSize("clock", 800, 590);
     const win = new Gtk.ApplicationWindow({
         application: app,
         title: "Waybar GNOME Clock",
-        default_width: 800,
-        default_height: 590,
+        default_width: initialWidth,
+        default_height: initialHeight,
         decorated: false,
         resizable: false,
     });
@@ -466,7 +498,7 @@ function buildClockWindow(app) {
 
     root.append(left);
     root.append(right);
-    win.set_child(root);
+    setPopupChild(win, root);
     populateClockWidgets();
     return win;
 }

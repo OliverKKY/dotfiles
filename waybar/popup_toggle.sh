@@ -19,6 +19,7 @@ close_mode() {
         local pid
         pid="$(cat "$pid_file" 2>/dev/null || true)"
         if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+            "$position_script" "$target" "$pid" close >/dev/null 2>&1 || true
             kill "$pid" 2>/dev/null || true
         fi
         rm -f "$pid_file"
