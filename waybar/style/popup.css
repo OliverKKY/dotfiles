@@ -1,4 +1,4 @@
-@import url("../../.cache/wal/colors-waybar.css");
+@import url("../../../.cache/wal/colors-waybar.css");
 
 @define-color popup_surface alpha(@background, 0.9);
 @define-color card_surface alpha(@foreground, 0.16);

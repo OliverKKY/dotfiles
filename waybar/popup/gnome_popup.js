@@ -16,10 +16,11 @@ Adw.init();
 const MODE = ARGV[0] || "quick-settings";
 const STICKY = GLib.getenv("WAYBAR_GNOME_POPUP_STICKY") === "1";
 const CONFIG_ROOT = GLib.getenv("XDG_CONFIG_HOME") || GLib.build_filenamev([GLib.getenv("HOME"), ".config"]);
-const CONFIG_DIR = GLib.build_filenamev([CONFIG_ROOT, "waybar"]);
-const ACTION_SCRIPT = `${CONFIG_DIR}/popup_action.sh`;
-const STATE_SCRIPT = `${CONFIG_DIR}/popup_state.sh`;
-const CSS_FILE = `${CONFIG_DIR}/gnome_popup.css`;
+const WAYBAR_DIR = GLib.build_filenamev([CONFIG_ROOT, "waybar"]);
+const POPUP_DIR = GLib.build_filenamev([WAYBAR_DIR, "popup"]);
+const ACTION_SCRIPT = `${POPUP_DIR}/action.sh`;
+const STATE_SCRIPT = `${POPUP_DIR}/state.sh`;
+const CSS_FILE = `${WAYBAR_DIR}/style/popup.css`;
 const ANIMATE_OPEN = GLib.getenv("WAYBAR_GNOME_POPUP_ANIMATE") !== "0";
 
 let windowRef = null;

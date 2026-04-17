@@ -8,7 +8,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/system-status"],
+  "modules-right": ["tray", "custom/system-status"],
 
   "hyprland/workspaces": {
     "format": "{icon}",
@@ -30,7 +30,7 @@
   "clock": {
     "format": "{:%a %d %b  %H:%M}",
     "tooltip-format": "<span size='large'><b>{:%A, %B %-d, %Y}</b></span>\n\n<tt><small>{calendar}</small></tt>",
-    "on-click": "~/.config/waybar/popup_toggle.sh clock",
+    "on-click": "~/.config/waybar/popup/toggle.sh clock",
     "calendar": {
       "mode": "month",
       "weeks-pos": "right",
@@ -50,14 +50,19 @@
     },
   },
 
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+  },
+
   "custom/system-status": {
     "format": "{text}",
     "return-type": "json",
-    "exec": "~/.config/waybar/system_status.sh",
+    "exec": "~/.config/waybar/scripts/system_status.sh",
     "interval": 5,
     "tooltip": true,
     "escape": true,
-    "on-click": "~/.config/waybar/popup_toggle.sh quick-settings",
-    "on-click-right": "~/.config/waybar/popup_action.sh sound-settings",
+    "on-click": "~/.config/waybar/popup/toggle.sh quick-settings",
+    "on-click-right": "~/.config/waybar/popup/action.sh sound-settings",
   },
 }

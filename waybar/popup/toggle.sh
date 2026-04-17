@@ -5,8 +5,8 @@ set -u
 config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
 mode="${1:-quick-settings}"
 launch_mode="${2:-}"
-popup_script="$config_root/waybar/gnome_popup.js"
-position_script="$config_root/waybar/popup_position.sh"
+popup_script="$config_root/waybar/popup/gnome_popup.js"
+position_script="$config_root/waybar/popup/position.sh"
 pid_dir="${XDG_RUNTIME_DIR:-/tmp}/waybar-gnome-popup"
 
 mkdir -p "$pid_dir"
