@@ -8,7 +8,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "custom/system-status"],
+  "modules-right": ["tray", "pulseaudio", "battery", "network"],
 
   "hyprland/workspaces": {
     "format": "{icon}",
@@ -52,17 +52,47 @@
 
   "tray": {
     "icon-size": 16,
-    "spacing": 8,
+    "spacing": 4,
+  },
+  "network": {
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰛳",
+    "format-linked": "󰛳",
+    "format-disconnected": "󰤮",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "tooltip-format-wifi": "Wi-Fi: {essid}",
+    "tooltip-format-ethernet": "Ethernet: {ifname}",
+    "tooltip-format-linked": "Network: {ifname} (no IP)",
+    "tooltip-format-disconnected": "Network disconnected",
+    "interval": 5,
   },
 
-  "custom/system-status": {
-    "format": "{text}",
-    "return-type": "json",
-    "exec": "~/.config/waybar/scripts/system_status.sh",
-    "interval": 5,
-    "tooltip": true,
-    "escape": true,
-    "on-click": "~/.config/waybar/popup/toggle.sh quick-settings",
-    "on-click-right": "~/.config/waybar/popup/action.sh sound-settings",
+  "pulseaudio": {
+    "format": "<span size='x-large'>{icon}</span>",
+    "format-muted": "<span size='x-large'>󰸈</span>",
+    "format-icons": {
+      "default": ["󰕿", "󰖀", "󰕾"],
+    },
+    "tooltip-format": "Audio: {volume}%",
+    "tooltip-format-muted": "Audio: muted",
+    "scroll-step": 5,
+  },
+
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15,
+    },
+    "format": "{icon}",
+    "format-charging": "{icon}",
+    "format-full": "󰁹",
+    "format-icons": {
+      "default": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+      "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+    },
+    "tooltip-format": "Battery: {capacity}% ({time})",
+    "tooltip-format-charging": "Battery: {capacity}% (charging)",
+    "tooltip-format-full": "Battery: 100% (full)",
+    "interval": 10,
   },
 }
