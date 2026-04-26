@@ -3,7 +3,7 @@
 set -euo pipefail
 
 pkill waybar || true
-sleep 0.2
+sleep 0.1
 
 waybar \
     -c "${XDG_CONFIG_HOME:-$HOME/.config}/waybar/config/top.jsonc" \

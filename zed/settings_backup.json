@@ -8,15 +8,15 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "outline_panel": {
-    "dock": "left",
+    "dock": "left"
   },
   "agent": {
     "dock": "right",
     "favorite_models": [],
-    "model_parameters": [],
+    "model_parameters": []
   },
   "git_panel": {
-    "dock": "left",
+    "dock": "left"
   },
   "collaboration_panel": {
     "dock": "left",
@@ -61,6 +61,7 @@
   },
   "title_bar": {
     "show_menus": false,
+    "show_branch_icon": false,
   },
   "search": {
     "button": false,

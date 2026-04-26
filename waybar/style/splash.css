@@ -17,11 +17,11 @@
 }
 
 #waybar > box {
-    padding-bottom: 76px;
+    padding-bottom: 56px;
 }
 
 #custom-splash {
     background: transparent;
-    color: alpha(@foreground, 0.72);
+    color: alpha(@foreground, 0.92);
     text-shadow: 0 1px 3px alpha(@background, 0.85);
 }
