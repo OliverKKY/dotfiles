@@ -172,6 +172,7 @@ for root in roots:
             desktop_id(path, root),
             data.get("Icon", ""),
             data.get("GenericName", ""),
+            str(path),
         ))
 
 seen = set()
@@ -194,13 +195,23 @@ list_entries() {
             if ($4 != "") {
                 display = display " [" $4 "]"
             }
-            printf "%s\0icon\x1f%s\x1finfo\x1fapp:%s\n", display, $3, $2
+            printf "%s\0icon\x1f%s\x1finfo\x1fapp:%s\t%s\n", display, $3, $2, $5
         }' "$cache_file"
 }
 
 launch_app() {
     local desktop_id=$1
-    gtk-launch "$desktop_id" >/dev/null 2>&1 &
+    local desktop_file=$2
+
+    if command -v gio >/dev/null 2>&1; then
+        gio launch "$desktop_file" >/dev/null 2>&1 &
+    elif command -v gtk-launch >/dev/null 2>&1; then
+        gtk-launch "$desktop_id" >/dev/null 2>&1 &
+    elif command -v dex >/dev/null 2>&1; then
+        dex "$desktop_file" >/dev/null 2>&1 &
+    else
+        return 1
+    fi
     disown || true
 }
 
@@ -210,7 +221,8 @@ case "${ROFI_RETV:-0}" in
         ;;
     1)
         if [[ "${ROFI_INFO:-}" == app:* ]]; then
-            launch_app "${ROFI_INFO#app:}"
+            app_info=${ROFI_INFO#app:}
+            launch_app "${app_info%%$'\t'*}" "${app_info#*$'\t'}"
         elif [ -n "${1:-}" ]; then
             open_in_browser "$1"
         fi
