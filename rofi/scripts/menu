@@ -5,14 +5,21 @@ set -euo pipefail
 cache_file="/tmp/rofi-menu-apps.tsv"
 
 browser_cmd=()
-if command -v brave >/dev/null 2>&1; then
+if [ -n "${BROWSER:-}" ] && command -v "${BROWSER%% *}" >/dev/null 2>&1; then
+    # shellcheck disable=SC2206
+    browser_cmd=(${BROWSER})
+elif command -v brave >/dev/null 2>&1; then
     browser_cmd=(brave)
 elif command -v brave-browser >/dev/null 2>&1; then
     browser_cmd=(brave-browser)
 elif command -v flatpak >/dev/null 2>&1; then
     browser_cmd=(flatpak run com.brave.Browser)
-else
+elif command -v xdg-open >/dev/null 2>&1; then
     browser_cmd=(xdg-open)
+elif command -v gio >/dev/null 2>&1; then
+    browser_cmd=(gio open)
+else
+    browser_cmd=(python3 -m webbrowser)
 fi
 
 urlencode() {
@@ -82,14 +89,45 @@ open_in_browser() {
 build_cache() {
     mkdir -p "$(dirname "$cache_file")"
     python3 - <<'PY' > "$cache_file"
+import os
 from pathlib import Path
 
-roots = [
-    Path("/usr/share/applications"),
-    Path.home() / ".local/share/applications",
-    Path("/var/lib/flatpak/exports/share/applications"),
-    Path.home() / ".local/share/flatpak/exports/share/applications",
-]
+def candidate_roots():
+    roots = []
+    home = Path.home()
+    xdg_data_home = Path(os.environ.get("XDG_DATA_HOME", home / ".local/share"))
+    roots.append(xdg_data_home / "applications")
+
+    xdg_data_dirs = os.environ.get("XDG_DATA_DIRS")
+    if xdg_data_dirs:
+        for entry in xdg_data_dirs.split(":"):
+            if entry:
+                roots.append(Path(entry) / "applications")
+    else:
+        roots.extend([
+            Path("/usr/local/share/applications"),
+            Path("/usr/share/applications"),
+        ])
+
+    roots.extend([
+        Path("/var/lib/flatpak/exports/share/applications"),
+        home / ".local/share/flatpak/exports/share/applications",
+        home / ".nix-profile/share/applications",
+        Path("/etc/profiles/per-user") / home.name / "share/applications",
+        Path("/run/current-system/sw/share/applications"),
+        Path("/nix/var/nix/profiles/default/share/applications"),
+    ])
+
+    deduped = []
+    seen = set()
+    for root in roots:
+        key = str(root)
+        if key not in seen:
+            seen.add(key)
+            deduped.append(root)
+    return deduped
+
+roots = candidate_roots()
 
 def desktop_id(path: Path, root: Path) -> str:
     try:
