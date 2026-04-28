@@ -79,69 +79,74 @@ open_in_browser() {
     disown || true
 }
 
-desktop_id_from_path() {
-    local path=$1
-
-    case "$path" in
-        /usr/share/applications/*)
-            local rel=${path#/usr/share/applications/}
-            printf '%s\n' "${rel//\//-}"
-            ;;
-        "$HOME"/.local/share/applications/*)
-            local rel=${path#"$HOME"/.local/share/applications/}
-            printf '%s\n' "${rel//\//-}"
-            ;;
-        *)
-            basename "$path"
-            ;;
-    esac
-}
-
 build_cache() {
     mkdir -p "$(dirname "$cache_file")"
-    : > "$cache_file"
+    python3 - <<'PY' > "$cache_file"
+from pathlib import Path
 
-    while IFS= read -r -d '' desktop_file; do
-        local name=
-        local icon=
-        local generic=
-        local nodisplay=
-        local hidden=
+roots = [
+    Path("/usr/share/applications"),
+    Path.home() / ".local/share/applications",
+    Path("/var/lib/flatpak/exports/share/applications"),
+    Path.home() / ".local/share/flatpak/exports/share/applications",
+]
 
-        while IFS='=' read -r key value; do
-            case "$key" in
-                Name)
-                    [ -z "$name" ] && name=$value
-                    ;;
-                Icon)
-                    [ -z "$icon" ] && icon=$value
-                    ;;
-                GenericName)
-                    [ -z "$generic" ] && generic=$value
-                    ;;
-                NoDisplay)
-                    nodisplay=$value
-                    ;;
-                Hidden)
-                    hidden=$value
-                    ;;
-            esac
-        done < "$desktop_file"
+def desktop_id(path: Path, root: Path) -> str:
+    try:
+        rel = path.relative_to(root)
+        return str(rel).replace("/", "-")
+    except ValueError:
+        return path.name
 
-        [ -n "$name" ] || continue
-        [ "${nodisplay,,}" = "true" ] && continue
-        [ "${hidden,,}" = "true" ] && continue
+def parse_desktop_file(path: Path):
+    data = {}
+    in_desktop_entry = False
+    for raw_line in path.read_text(errors="ignore").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("["):
+            in_desktop_entry = line == "[Desktop Entry]"
+            continue
+        if not in_desktop_entry or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        data.setdefault(key, value)
+    return data
 
-        printf '%s\t%s\t%s\t%s\n' \
-            "$name" \
-            "$(desktop_id_from_path "$desktop_file")" \
-            "$icon" \
-            "$generic" >> "$cache_file"
-    done < <(find /usr/share/applications "$HOME/.local/share/applications" -type f -name '*.desktop' -print0 2>/dev/null)
+entries = []
+for root in roots:
+    if not root.exists():
+        continue
+    for path in root.rglob("*.desktop"):
+        data = parse_desktop_file(path)
+        name = data.get("Name")
+        if not name:
+            continue
+        if data.get("Hidden", "").lower() == "true":
+            continue
+        if data.get("NoDisplay", "").lower() == "true":
+            continue
+        if data.get("Type", "Application") not in {"Application", "Link"}:
+            continue
+        entries.append((
+            name,
+            desktop_id(path, root),
+            data.get("Icon", ""),
+            data.get("GenericName", ""),
+        ))
+
+seen = set()
+for entry in sorted(entries, key=lambda item: item[0].lower()):
+    if entry[1] in seen:
+        continue
+    seen.add(entry[1])
+    print("\t".join(entry))
+PY
 }
 
 list_entries() {
-    [ -f "$cache_file" ] || build_cache
+    build_cache
 
     printf '\0prompt\x1fSearch\n'
     printf '\0message\x1fType app name, <b>cats</b> for Brave search, or bangs like <b>!g cats</b>, <b>!yt cats</b>, <b>!gh repo</b>\n'
