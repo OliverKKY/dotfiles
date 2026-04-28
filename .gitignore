@@ -6,6 +6,8 @@
 !hypr/**
 !kitty/
 !kitty/**
+!eww/
+!eww/**
 !rofi/
 !rofi/**
 !wal/

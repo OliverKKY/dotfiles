@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cache_file="/tmp/rofi-menu-apps.tsv"
+
+browser_cmd=()
+if command -v brave >/dev/null 2>&1; then
+    browser_cmd=(brave)
+elif command -v brave-browser >/dev/null 2>&1; then
+    browser_cmd=(brave-browser)
+elif command -v flatpak >/dev/null 2>&1; then
+    browser_cmd=(flatpak run com.brave.Browser)
+else
+    browser_cmd=(xdg-open)
+fi
+
+urlencode() {
+    python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$1"
+}
+
+bang_to_url() {
+    local prefix=$1
+    local query=$2
+
+    case "$prefix" in
+        g)
+            printf 'https://www.google.com/search?q=%s\n' "$(urlencode "$query")"
+            ;;
+        yt)
+            printf 'https://www.youtube.com/results?search_query=%s\n' "$(urlencode "$query")"
+            ;;
+        gh)
+            printf 'https://github.com/search?q=%s\n' "$(urlencode "$query")"
+            ;;
+        d)
+            printf 'https://duckduckgo.com/?q=%s\n' "$(urlencode "$query")"
+            ;;
+        br)
+            printf 'https://search.brave.com/search?q=%s\n' "$(urlencode "$query")"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+open_in_browser() {
+    local input=$1
+    local url=
+
+    if [[ "$input" =~ ^https?:// ]]; then
+        url=$input
+    elif [[ "$input" =~ ^!([a-zA-Z0-9]+)[[:space:]]+(.+) ]]; then
+        local prefix=${BASH_REMATCH[1],,}
+        local query=${BASH_REMATCH[2]}
+        if ! url=$(bang_to_url "$prefix" "$query"); then
+            return 1
+        fi
+    fi
+
+    if [ -n "${url:-}" ]; then
+        if [ "${browser_cmd[0]}" = "xdg-open" ]; then
+            xdg-open "$url" >/dev/null 2>&1 &
+        else
+            "${browser_cmd[@]}" "$url" >/dev/null 2>&1 &
+        fi
+        disown || true
+        return 0
+    fi
+
+    if [ "${browser_cmd[0]}" = "xdg-open" ]; then
+        xdg-open "https://search.brave.com/search?q=$(urlencode "$input")" >/dev/null 2>&1 &
+    elif [ "${browser_cmd[0]}" = "flatpak" ]; then
+        flatpak run com.brave.Browser --search "$input" >/dev/null 2>&1 &
+    else
+        "${browser_cmd[@]}" --search "$input" >/dev/null 2>&1 &
+    fi
+    disown || true
+}
+
+desktop_id_from_path() {
+    local path=$1
+
+    case "$path" in
+        /usr/share/applications/*)
+            local rel=${path#/usr/share/applications/}
+            printf '%s\n' "${rel//\//-}"
+            ;;
+        "$HOME"/.local/share/applications/*)
+            local rel=${path#"$HOME"/.local/share/applications/}
+            printf '%s\n' "${rel//\//-}"
+            ;;
+        *)
+            basename "$path"
+            ;;
+    esac
+}
+
+build_cache() {
+    mkdir -p "$(dirname "$cache_file")"
+    : > "$cache_file"
+
+    while IFS= read -r -d '' desktop_file; do
+        local name=
+        local icon=
+        local generic=
+        local nodisplay=
+        local hidden=
+
+        while IFS='=' read -r key value; do
+            case "$key" in
+                Name)
+                    [ -z "$name" ] && name=$value
+                    ;;
+                Icon)
+                    [ -z "$icon" ] && icon=$value
+                    ;;
+                GenericName)
+                    [ -z "$generic" ] && generic=$value
+                    ;;
+                NoDisplay)
+                    nodisplay=$value
+                    ;;
+                Hidden)
+                    hidden=$value
+                    ;;
+            esac
+        done < "$desktop_file"
+
+        [ -n "$name" ] || continue
+        [ "${nodisplay,,}" = "true" ] && continue
+        [ "${hidden,,}" = "true" ] && continue
+
+        printf '%s\t%s\t%s\t%s\n' \
+            "$name" \
+            "$(desktop_id_from_path "$desktop_file")" \
+            "$icon" \
+            "$generic" >> "$cache_file"
+    done < <(find /usr/share/applications "$HOME/.local/share/applications" -type f -name '*.desktop' -print0 2>/dev/null)
+}
+
+list_entries() {
+    [ -f "$cache_file" ] || build_cache
+
+    printf '\0prompt\x1fSearch\n'
+    printf '\0message\x1fType app name, <b>cats</b> for Brave search, or bangs like <b>!g cats</b>, <b>!yt cats</b>, <b>!gh repo</b>\n'
+    awk -F '\t' '
+        {
+            display = $1
+            if ($4 != "") {
+                display = display " [" $4 "]"
+            }
+            printf "%s\0icon\x1f%s\x1finfo\x1fapp:%s\n", display, $3, $2
+        }' "$cache_file"
+}
+
+launch_app() {
+    local desktop_id=$1
+    gtk-launch "$desktop_id" >/dev/null 2>&1 &
+    disown || true
+}
+
+case "${ROFI_RETV:-0}" in
+    0)
+        list_entries
+        ;;
+    1)
+        if [[ "${ROFI_INFO:-}" == app:* ]]; then
+            launch_app "${ROFI_INFO#app:}"
+        elif [ -n "${1:-}" ]; then
+            open_in_browser "$1"
+        fi
+        ;;
+    2)
+        if [ -n "${1:-}" ]; then
+            open_in_browser "$1"
+        fi
+        ;;
+esac

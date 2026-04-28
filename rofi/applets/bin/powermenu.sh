@@ -8,6 +8,7 @@
 # Import Current Theme
 source "$HOME"/.config/rofi/applets/shared/theme.bash
 theme="$type/$style"
+powermenu_theme="$HOME/.config/rofi/powermenu.rasi"
 
 # Theme Elements
 prompt="`hostname`"
@@ -20,6 +21,9 @@ elif [[ ( "$theme" == *'type-2'* ) || ( "$theme" == *'type-4'* ) ]]; then
 	list_col='6'
 	list_row='1'
 fi
+
+list_col='2'
+list_row='3'
 
 # Options
 layout=`cat ${theme} | grep 'USE_ICON' | cut -d'=' -f2`
@@ -51,7 +55,7 @@ rofi_cmd() {
 		-p "$prompt" \
 		-mesg "$mesg" \
 		-markup-rows \
-		-theme ${theme}
+		-theme "$powermenu_theme"
 }
 
 # Pass variables to rofi dmenu
@@ -62,14 +66,16 @@ run_rofi() {
 # Confirmation CMD
 confirm_cmd() {
 	rofi -theme-str 'window {location: center; anchor: center; fullscreen: false; width: 350px;}' \
-		-theme-str 'mainbox {orientation: vertical; children: [ "message", "listview" ];}' \
+		-theme-str 'mainbox {spacing: 18px; children: [ "message", "listview" ];}' \
+		-theme-str 'message {padding: 8px 2px 0px 2px;}' \
 		-theme-str 'listview {columns: 2; lines: 1;}' \
+		-theme-str 'element {padding: 14px 16px;}' \
 		-theme-str 'element-text {horizontal-align: 0.5;}' \
 		-theme-str 'textbox {horizontal-align: 0.5;}' \
 		-dmenu \
 		-p 'Confirmation' \
 		-mesg 'Are you Sure?' \
-		-theme ${theme}
+		-theme "$powermenu_theme"
 }
 
 # Ask for confirmation
@@ -126,4 +132,3 @@ case ${chosen} in
 		run_cmd --opt6
         ;;
 esac
-

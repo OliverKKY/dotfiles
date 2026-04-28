@@ -57,7 +57,8 @@
 #tray,
 #network,
 #pulseaudio,
-#battery {
+#battery,
+#custom-power {
     margin: 0px 0px;
     min-height: 0px;
     transition:
@@ -151,7 +152,8 @@
 
 #network,
 #pulseaudio,
-#battery {
+#battery,
+#custom-power {
     margin: 0;
     padding: 0 3px;
     background: transparent;
@@ -163,13 +165,20 @@
 #pulseaudio,
 #battery,
 #network,
-#tray {
+#tray,
+#custom-power {
     min-height: 0;
 }
 
 #network {
-    margin-right: 2;
-    padding-right: 4;
+    margin-right: 0;
+    padding-right: 2px;
+}
+
+#custom-power {
+    padding-left: 6px;
+    font-size: 13px;
+    color: alpha(@foreground, 0.88);
 }
 
 #clock:hover,
@@ -188,7 +197,8 @@
 #tray:hover,
 #network:hover,
 #pulseaudio:hover,
-#battery:hover {
+#battery:hover,
+#custom-power:hover {
     background: transparent;
     border-color: transparent;
     box-shadow: none;

@@ -8,7 +8,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "pulseaudio", "battery", "network"],
+  "modules-right": ["tray", "pulseaudio", "battery", "network", "custom/power"],
 
   "hyprland/workspaces": {
     "format": "{icon}",
@@ -94,5 +94,11 @@
     "tooltip-format-charging": "Battery: {capacity}% (charging)",
     "tooltip-format-full": "Battery: 100% (full)",
     "interval": 10,
+  },
+
+  "custom/power": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "~/.config/rofi/applets/bin/powermenu.sh",
   },
 }
