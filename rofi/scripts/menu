@@ -16,8 +16,6 @@ elif command -v flatpak >/dev/null 2>&1; then
     browser_cmd=(flatpak run com.brave.Browser)
 elif command -v xdg-open >/dev/null 2>&1; then
     browser_cmd=(xdg-open)
-elif command -v gio >/dev/null 2>&1; then
-    browser_cmd=(gio open)
 else
     browser_cmd=(python3 -m webbrowser)
 fi
@@ -200,18 +198,56 @@ list_entries() {
 }
 
 launch_app() {
-    local desktop_id=$1
-    local desktop_file=$2
+    local desktop_file=$1
 
-    if command -v gio >/dev/null 2>&1; then
-        gio launch "$desktop_file" >/dev/null 2>&1 &
-    elif command -v gtk-launch >/dev/null 2>&1; then
-        gtk-launch "$desktop_id" >/dev/null 2>&1 &
-    elif command -v dex >/dev/null 2>&1; then
-        dex "$desktop_file" >/dev/null 2>&1 &
-    else
-        return 1
-    fi
+    python3 - "$desktop_file" <<'PY' >/dev/null 2>&1 &
+import configparser
+import os
+import re
+import shlex
+import subprocess
+import sys
+
+desktop_file = sys.argv[1]
+
+parser = configparser.ConfigParser(interpolation=None, strict=False)
+parser.optionxform = str
+parser.read(desktop_file, encoding="utf-8")
+
+if "Desktop Entry" not in parser:
+    sys.exit(1)
+
+entry = parser["Desktop Entry"]
+exec_line = entry.get("Exec", "").strip()
+if not exec_line:
+    sys.exit(1)
+
+# Drop desktop-entry field codes. Keep %% as literal %.
+exec_line = exec_line.replace("%%", "__PERCENT__")
+exec_line = re.sub(r"%[fFuUdDnNickvm]", "", exec_line)
+exec_line = exec_line.replace("__PERCENT__", "%").strip()
+
+cmd = shlex.split(exec_line)
+if not cmd:
+    sys.exit(1)
+
+# Flatpak desktop files often wrap forwarded file args in @@ ... @@.
+# After removing %U/%F tokens, the markers and --file-forwarding become invalid.
+cmd = [part for part in cmd if part != "@@"]
+if "--file-forwarding" in cmd:
+    cmd = [part for part in cmd if part != "--file-forwarding"]
+if not cmd:
+    sys.exit(1)
+
+subprocess.Popen(
+    cmd,
+    stdin=subprocess.DEVNULL,
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+    start_new_session=True,
+    env=os.environ.copy(),
+)
+PY
     disown || true
 }
 
@@ -222,7 +258,7 @@ case "${ROFI_RETV:-0}" in
     1)
         if [[ "${ROFI_INFO:-}" == app:* ]]; then
             app_info=${ROFI_INFO#app:}
-            launch_app "${app_info%%$'\t'*}" "${app_info#*$'\t'}"
+            launch_app "${app_info#*$'\t'}"
         elif [ -n "${1:-}" ]; then
             open_in_browser "$1"
         fi
